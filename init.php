@@ -27,7 +27,8 @@ class clsWeatherData {
     }
 
     public function enqueue_styles() {
-        wp_add_inline_style('wp-block-library', $this->get_weather_widget_styles());
+        // wp_add_inline_style('wp-block-library', $this->get_weather_widget_styles());
+        // wp_add_inline_style('wp-block-library', $this->weather_style());
     }
 
     private function get_weather_widget_styles() {
@@ -144,6 +145,27 @@ class clsWeatherData {
         ';
     }
 
+    private function weather_style() {
+        return '
+        .weather-widget {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            color: #fff;
+        }
+        .weather-icon img {
+            width: 32px;
+        }
+        .weather-separator {
+            margin-right: 8px;
+        }
+        .weather-forecast-link {
+            margin-left: 8px;
+            color: #fff !important;
+        }
+        ';
+    }
+
     public function weather_widget() {
         ob_start();
         $options = $this->get_options();
@@ -164,7 +186,7 @@ class clsWeatherData {
             <div class="weather-widget">
                 <div class="weather-icon">
                     <?php $image = $this->getWeatherIcon($weather['current_weather']['weathercode']); ?>
-                    <img src="<?php echo plugin_dir_url(__FILE__) . 'icons/' . $image; ?>" alt="<?php echo $this->getWeatherDescription($weather['current_weather']['weathercode']); ?>">
+                    <img src="<?php echo plugin_dir_url(__FILE__) . 'icons/' . $image; ?>" alt="<?php echo $this->getWeatherDescription($weather['current_weather']['weathercode']); ?>"> | 
                 </div>
                 <div class="weather-temp">
                     <?php
@@ -172,9 +194,12 @@ class clsWeatherData {
                     $temperature = $this->celsiusToFahrenheit($temperature);
                     echo round($temperature);
                     ?>
-                    <span class="weather-separator">°F</span>
+                    <span class="weather-separator">°F</span> | 
                 </div>
                 <div class="weather-desc"><?php echo $this->getWeatherDescription($weather['current_weather']['weathercode']); ?></div>
+                <div>
+                    | <a class="weather-forecast-link" href="https://weather.com/weather/today/l/3e97be086875e7cef17ae1290de6a70ec5773282a61fd11259451de678fb4bb8" target="_blank">View Extended Forecast</a>
+                </div>
             </div>
             <?php
         } catch (Exception $e) {
